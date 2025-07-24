@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'phonenumber_field',
+    'channels',
 
     # Local apps
     'auth_system',
