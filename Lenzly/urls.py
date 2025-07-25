@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/', include('follow_system.urls')),
     path('api/', include('post_app.urls')),
     path('api/', include('story_app.urls')),
-    path('api/', include('chat_system.urls'))
+    path('api/chat/', include('chat_system.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

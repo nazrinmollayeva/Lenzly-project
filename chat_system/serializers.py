@@ -41,13 +41,13 @@ class MessageCreateSerializer(serializers.ModelSerializer):
         fields = ['conversation', 'text', 'attachment']
 
     def validate_conversation(self, convo):
-        user = self.context['request'].user
-        if not convo.participants.filter(id=user.id).exists():
+        user = self.context.get('user')
+        if not user or not convo.participants.filter(id=user.id).exists():
             raise serializers.ValidationError('Not a participant in this conversation.')
         return convo
 
     def create(self, validated_data):
-        validated_data['sender'] = self.context['request'].user
+        validated_data['sender'] = self.context.get('user')
         return super().create(validated_data)
 
 class ParticipantSerializer(serializers.ModelSerializer):
@@ -86,7 +86,8 @@ class ConversationSerializer(serializers.ModelSerializer):
 
 class ConversationCreateSerializer(serializers.ModelSerializer):
     participant_ids = serializers.ListField(
-        child=serializers.IntegerField(), write_only=True
+        child=serializers.UUIDField(),  # integer yox, UUIDField istifadə edilir
+        write_only=True
     )
 
     class Meta:

@@ -5,8 +5,10 @@ from django.contrib.auth import get_user_model
 from channels.db import database_sync_to_async
 from .models import Conversation, Message
 from .serializers import MessageSerializer, MessageCreateSerializer
+from asgiref.sync import sync_to_async
 
 User = get_user_model()
+
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -37,7 +39,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         # Serializer ilə yaratmaq
         serializer = MessageCreateSerializer(
             data={"conversation": convo.id, "text": content.get("text"), "attachment": None},
-            context={"request": self.scope["request"]}  # Əgər burada request yoxdursa, sadəcə {"user": user} də verə bilərsiniz
+            # context={"request": self.scope["request"]}  # Əgər burada request yoxdursa, sadəcə {"user": user} də verə bilərsiniz
+            context={"user": self.scope["user"]}
         )
         # Validate & save
         if not serializer.is_valid():
